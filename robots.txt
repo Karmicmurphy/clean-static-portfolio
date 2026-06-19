@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Static portfolio hub for Randy Noxon.
