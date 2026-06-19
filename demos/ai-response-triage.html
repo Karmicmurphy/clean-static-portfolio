@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Response Triage — Randy AI Field Kit</title>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<nav class="nav"><div class="container nav-inner"><a class="brand" href="../index.html">Randy AI Field Kit</a><div class="nav-links"><a href="../index.html#demos">Demos</a><a href="../resume/index.html">Resume</a><a href="mailto:rnoxon78@gmail.com">Contact</a></div></div></nav>
+<main class="tool-page"><div class="container">
+  <div class="eyebrow">Demo 1 · AI evaluation</div>
+  <h1>AI Response Triage</h1>
+  <p class="lede">Paste a user request and an AI response, choose the failure type, and generate evaluator notes plus a repair direction.</p>
+  <p class="notice">Static demo: runs entirely in the browser. It proves evaluation structure without relying on a paid model API.</p>
+  <section class="demo-tool">
+    <label for="request">Original user request</label>
+    <textarea id="request">I need help building a practical rustic fence using what I already have: five-foot T-posts, cattle panels, rough logs, uneven rocky ground, limited money, and livestock pressure. Do not design an ideal commercial fence.</textarea>
+    <label for="response">AI response being evaluated</label>
+    <textarea id="response">For a durable fence, install eight-foot pressure-treated posts in concrete, grade the ground level, buy commercial woven wire, and use professional H-braces.</textarea>
+    <div class="tool-row">
+      <div>
+        <label for="failure">Failure type</label>
+        <select id="failure">
+          <option value="lost">Lost Constraints</option>
+          <option value="certainty">Unsupported Certainty</option>
+          <option value="looping">Looping</option>
+          <option value="overexplaining">Overexplaining</option>
+          <option value="source">Source / Assumption Confusion</option>
+          <option value="restart">Restart Behavior</option>
+          <option value="context">Context Collapse</option>
+        </select>
+      </div>
+      <div>
+        <label for="severity">Severity</label>
+        <select id="severity"><option>High</option><option>Medium</option><option>Low</option></select>
+      </div>
+    </div>
+    <div class="buttons"><button type="button" class="btn primary" onclick="triage()">Generate triage</button><button type="button" class="btn" onclick="copyOutput()">Copy result</button></div>
+    <div id="output" class="output" aria-live="polite"></div>
+  </section>
+</div></main>
+<footer class="footer"><div class="container"><a href="../index.html">Back to portfolio</a></div></footer>
+<script>
+const data = {
+  lost: {
+    name: 'Lost Constraints',
+    failed: 'The response ignored the user’s stated limits and solved a cleaner, fake version of the problem.',
+    matters: 'A response can sound confident and still be unusable if it replaces the real situation with ideal resources.',
+    repair: 'Preserve the user’s materials, budget, tools, location, and goal. Do not substitute better materials or ideal conditions unless asked.',
+    score: 'Mark down for instruction-following and practical usefulness.'
+  },
+  certainty: {
+    name: 'Unsupported Certainty',
+    failed: 'The response presents guesses, assumptions, or unstable claims as facts.',
+    matters: 'Users need clear separation between what is known, what is inferred, and what needs verification.',
+    repair: 'State uncertainty, identify assumptions, and ask for or cite the evidence needed before making strong claims.',
+    score: 'Mark down for factual reliability and calibration.'
+  },
+  looping: {
+    name: 'Looping',
+    failed: 'The response repeats prior advice without advancing the task or addressing the user’s latest state.',
+    matters: 'Looping wastes the user’s time and makes the system feel stuck.',
+    repair: 'Acknowledge what was already covered, identify the next decision or action, and move one step forward.',
+    score: 'Mark down for task progression.'
+  },
+  overexplaining: {
+    name: 'Overexplaining',
+    failed: 'The response buries the useful answer under unnecessary background, disclaimers, or generic explanation.',
+    matters: 'The user may miss the practical next step even when the answer contains useful material.',
+    repair: 'Lead with the answer, cut background, and give the smallest complete next step.',
+    score: 'Mark down for concision and usability.'
+  },
+  source: {
+    name: 'Source / Assumption Confusion',
+    failed: 'The response mixes verified user-provided information with invented assumptions.',
+    matters: 'This weakens trust and can corrupt source-governed workflows.',
+    repair: 'Separate sourced facts, user-provided constraints, and model assumptions in distinct sections.',
+    score: 'Mark down for provenance and evidence handling.'
+  },
+  restart: {
+    name: 'Restart Behavior',
+    failed: 'The response starts over instead of continuing from the established conversation state.',
+    matters: 'The model loses work already completed and forces the user to repeat context.',
+    repair: 'Continue from the current state, preserve established decisions, and only revisit earlier choices when necessary.',
+    score: 'Mark down for continuity.'
+  },
+  context: {
+    name: 'Context Collapse',
+    failed: 'The response forgets or scrambles the working state of the task.',
+    matters: 'Complex tasks depend on memory of constraints, decisions, and open issues.',
+    repair: 'Rebuild the working state from known facts, list open questions, and proceed without inventing missing pieces.',
+    score: 'Mark down for context management.'
+  }
+};
+function triage(){
+  const item = data[document.getElementById('failure').value];
+  const sev = document.getElementById('severity').value;
+  const req = document.getElementById('request').value.trim();
+  const res = document.getElementById('response').value.trim();
+  document.getElementById('output').textContent = `AI RESPONSE TRIAGE\n\nFailure type: ${item.name}\nSeverity: ${sev}\n\nWhat failed:\n${item.failed}\n\nWhy it matters:\n${item.matters}\n\nRepair direction:\n${item.repair}\n\nSuggested evaluator note:\n${item.score}\n\nOriginal request checked:\n${req.slice(0, 400)}${req.length > 400 ? '...' : ''}\n\nResponse checked:\n${res.slice(0, 400)}${res.length > 400 ? '...' : ''}`;
+}
+function copyOutput(){
+  const text = document.getElementById('output').textContent || '';
+  if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text); return; }
+  const box = document.createElement('textarea'); box.value = text; document.body.appendChild(box); box.select(); document.execCommand('copy'); box.remove();
+}
+triage();
+</script>
+</body>
+</html>
