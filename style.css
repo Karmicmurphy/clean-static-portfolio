@@ -264,3 +264,33 @@ body::after {
   .btn, .proof, .card, .case-card { transition: none; }
   .btn:hover, .proof:hover, .card:hover, .case-card:hover { transform: none; }
 }
+
+/* Mobile/deployment polish pass */
+img, svg, video { max-width: 100%; height: auto; }
+button, .btn, .artifact-button, select, input, textarea { min-height: 44px; }
+.output, textarea { overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  :root { --radius: 18px; }
+  .container { padding: 0 16px; }
+  .nav { position: relative; }
+  .nav-inner { min-height: auto; gap: 10px; }
+  .brand { font-size: 1rem; }
+  .nav-links { gap: 8px; font-size: .9rem; }
+  .nav-links a { padding: 6px 0; }
+  .hero { padding: 34px 0 20px; }
+  h1 { font-size: clamp(2.25rem, 15vw, 3.8rem); letter-spacing: -.045em; }
+  h2 { font-size: clamp(1.55rem, 9vw, 2.25rem); }
+  .lede { font-size: 1.05rem; }
+  .hardline { padding-left: 12px; }
+  .section { padding: 38px 0; }
+  .field-card, .card, .case-card, .demo-tool { padding: 18px; }
+  .buttons { flex-direction: column; align-items: stretch; gap: 10px; }
+  .btn { width: 100%; min-height: 46px; }
+  .proof { padding: 14px; }
+  textarea { min-height: 118px; }
+  .output { font-size: .94rem; padding: 15px; }
+}
+@media (min-width: 851px) and (max-width: 1080px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .proof-strip { grid-template-columns: repeat(2, 1fr); }
+}
